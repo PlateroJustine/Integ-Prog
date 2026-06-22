@@ -3,9 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Accurate Typography Art - Monkey D. Luffy</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Hello World</h1>
+    <div class="art-container">
+        <!-- The canvas dynamically generates the text image -->
+        <canvas id="typographyCanvas"></canvas>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('typographyCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Target text phrase requested
+        const textPhrase = "MONKEY D. LUFFY ";
+        let textIndex = 0;
+
+        // Base image source path
+        const img = new Image();
+        img.crossOrigin = "Anonymous";
+        img.src = 'https://celebritax.com';
+
+        img.onload = function() {
+            // Setup crisp high-density canvas boundaries
+            canvas.width = 1000;
+            canvas.height = 500;
+
+            // Step 1: Draw reference image onto the canvas grid space
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            // Step 2: Grab pixel metrics across coordinates
+            const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const pixels = imgData.data;
+
+            // Step 3: Refresh background scene to solid canvas dark layer
+            ctx.fillStyle = '#070c14';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Step 4: Render matrix rows using text particles
+            const fontSize = 10; 
+            ctx.font = `bold ${fontSize}px 'Courier New', Courier, monospace`;
+
+            // Scan through vertical coordinates
+            for (let y = 0; y < canvas.height; y += fontSize - 1) {
+                // Scan through horizontal coordinates
+                for (let x = 0; x < canvas.width; x += fontSize * 0.55) {
+                    
+                    // Locate standard data pixel index map matching array buffer
+                    const pixelIndex = (Math.floor(y) * canvas.width + Math.floor(x)) * 4;
+                    const r = pixels[pixelIndex];
+                    const g = pixels[pixelIndex + 1];
+                    const b = pixels[pixelIndex + 2];
+
+                    // Grab current structural character element sequence
+                    const char = textPhrase[textIndex % textPhrase.length];
+                    textIndex++;
+
+                    // Color character matching the exact pixel coordinates
+                    ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+                    ctx.fillText(char, x, y);
+                }
+            }
+        };
+    </script>
 </body>
 </html>
